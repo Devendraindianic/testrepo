@@ -35,10 +35,14 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push devendraindianic/cicdrepo
 
-      - name: Set up kubectl
-        uses: azure/kubernetes-set-up-kubectl@v1
-        with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+       - name: Install kubectl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kubectl
+
+      - name: Configure kubectl
+        run: |
+          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
 
       - name: Deploy to Kubernetes
         run: |
