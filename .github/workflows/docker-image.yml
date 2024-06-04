@@ -35,12 +35,11 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push devendraindianic/cicdrepo
 
-      - name: Create kubeconfig
-        run: |
-          mkdir ${HOME}/.kube
-          echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
-          cat ${HOME}/.kube/config
-          
+      - name: Set up kubectl
+        uses: azure/kubernetes-set-up-kubectl@v1
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f deployement.yaml --validate=false
